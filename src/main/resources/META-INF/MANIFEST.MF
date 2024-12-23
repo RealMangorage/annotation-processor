@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: net.minecraftforge.annotationprocessor
+FMLModType: LIBRARY
+
+Name: net/minecraftforge/annotationprocessor/
+Specification-Title: FML
+Specification-Vendor: Forge Development LLC
+Specification-Version: 1
+Implementation-Title: FML
+Implementation-Version: 1.0
+Implementation-Vendor: Forge Development LLC
+

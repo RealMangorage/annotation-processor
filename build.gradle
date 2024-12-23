@@ -1,0 +1,79 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'net.minecraftforge.licenser' version '1.0.1'
+    id 'net.minecraftforge.gradleutils' version '[2.3.0,2.4.0)'
+}
+
+group = 'net.minecraftforge'
+version = "$mc_version-$ap_version"
+
+repositories {
+    mavenCentral()
+    maven {
+        name "MinecraftForge Maven"
+        url = 'https://maven.minecraftforge.net/'
+    }
+    maven {
+        name = "Minecraft Maven"
+        url = "https://libraries.minecraft.net/"
+    }
+}
+
+def lib(id) {
+    return "net.minecraftforge:%s:%s-%s".formatted(id, mc_version, forge_version)
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'org.jetbrains:annotations:24.1.0'
+    implementation 'net.minecraftforge:eventbus:6.2.8'
+
+    implementation lib("fmlloader")
+    implementation lib("fmlcore")
+    implementation lib("javafmllanguage")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+                'Automatic-Module-Name': 'net.minecraftforge.annotationprocessor'
+        ] as LinkedHashMap)
+        attributes([
+                'Specification-Title':      'FML',
+                'Specification-Vendor':     'Forge Development LLC',
+                'Specification-Version':    '1',
+                'Implementation-Title':     'FML',
+                'Implementation-Version':   '1.0',
+                'Implementation-Vendor':    'Forge Development LLC'
+        ] as LinkedHashMap, 'net/minecraftforge/annotationprocessor/')
+    }
+}
+
+license {
+    header = rootProject.file('LICENSE-header.txt')
+}
+
+publishing {
+    publications.register('mavenJava', MavenPublication).configure {
+        from components.java
+        artifactId = 'annotationprocessor'
+        pom {
+            name = project.name
+            description = 'Modifactions to Minecraft to enable mod developers.'
+            url = 'https://github.com/MinecraftForge/MinecraftForge'
+            gradleutils.getPom().setGitHubDetails(pom, 'MinecraftForge')
+            license gradleutils.getPom().Licenses.LGPLv2_1
+        }
+    }
+
+    repositories {
+        maven gradleutils.publishingForgeMaven
+    }
+}
